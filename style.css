@@ -18,9 +18,9 @@ body{
 header{
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     background-color: rgb(153, 255, 0);
-    padding: 10px 0;
+    padding: 10px 40px;
 }
 
 .perfil-ft{
