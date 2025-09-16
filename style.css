@@ -66,3 +66,7 @@ main{
 .mayor-celd:nth-child(even){
     background-color: rgb(242, 242, 242);
 }
+
+.resaltMini{
+    border-color: rgb(255, 128, 0);
+}
