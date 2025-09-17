@@ -1,5 +1,5 @@
 let infoTabla = {
-    tabla: [
+    tabla: getTable() || [
         [0, 0, 8, 0, 7, 5, 0, 0, 0],
         [7, 0, 9, 3, 0, 0, 0, 0, 0],
         [6, 5, 0, 0, 9, 0, 7, 0, 3],
@@ -25,18 +25,17 @@ let infoTabla = {
         return data;
     },
 
-    /* getRow(row){
-        return this.tabla[row];
-    },
-
-    getColumn(column){
-        let values = [];
-        this.tabla.forEach(row => {
-            values.push(row[column]);
-        });
-        return values;
-    } */
+    updateTable(){
+        let parseado = JSON.stringify(this.tabla);
+        localStorage.setItem("table", parseado);
+    }
 }
+
+function getTable(){
+        let data = localStorage.getItem("table");
+        let parseado = JSON.parse(data);
+        return parseado;
+    }
 
 window.resaltDependients = (info, siono) => {
     let fila = document.querySelectorAll(`[data-row="${info.row}"]`);
@@ -51,9 +50,18 @@ window.resaltDependients = (info, siono) => {
     superCeld.forEach(ele => {
         ele.classList[siono ? "add" : "remove"]("resaltMini");
     })
-
-
 }
+
+function editContent(info){
+    if(isNaN(info.valor) || !info.valor.trim() || info.valor > 9 || info.valor < 1){ 
+        infoTabla.tabla[info.row][info.col] = 0;
+        tableRender();
+        return alert("Solo puedes ingresar números entre el 1 y el 9, pendejo.")
+    }
+    document.querySelector(`[data-row="${info.row}"][data-col="${info.col}"]`).innerText = info.valor.trim();
+    infoTabla.tabla[info.row][info.col] = info.valor.trim();
+    infoTabla.updateTable();
+}  
 
 function tableRender(){
     const skContainer = document.querySelector(".sk-container");
@@ -69,18 +77,27 @@ function tableRender(){
                     let val = infoTabla.tabla[globalRow][globalCol];
                     let minorCeld = document.createElement("div");
                     minorCeld.setAttribute("class", "minor-celd");
-                    minorCeld.setAttribute("tabindex", "0")
+                    minorCeld.setAttribute("tabindex", "0");
                     minorCeld.setAttribute("data-row", globalRow);
                     minorCeld.setAttribute("data-col", globalCol);
                     minorCeld.addEventListener("focus", (e) => {
-                        resaltDependients({elemeto: e.currentTarget, row: e.currentTarget.dataset.row, col: e.currentTarget.dataset.col}, true)
+                        minorCeld.contentEditable = true;
+                        resaltDependients({elemeto: e.currentTarget, row: e.currentTarget.dataset.row, col: e.currentTarget.dataset.col}, true);
                     });
                     minorCeld.addEventListener("blur", (e) => {
-                        resaltDependients({elemeto: e.currentTarget, row: e.currentTarget.dataset.row, col: e.currentTarget.dataset.col}, false)
-                    })
-                    minorCeld.innerText = val != 0 ? val : "";
+                        minorCeld.contentEditable = false;
+                        resaltDependients({elemeto: e.currentTarget, row: e.currentTarget.dataset.row, col: e.currentTarget.dataset.col}, false);
+                        editContent({valor: e.currentTarget.innerText.trim() || 0, row: e.currentTarget.dataset.row, col: e.currentTarget.dataset.col});
+                    });
+                    minorCeld.addEventListener("keydown", (e) => {
+                        if(e.key === "Enter"){
+                            e.currentTarget.blur();
+                            e.preventDefault();
+                        }
+                    });
+                    minorCeld.innerText = val != 0 ? val : "";  
                     superCeld.append(minorCeld);
-                }
+                };
             }
             skContainer.append(superCeld);
         };

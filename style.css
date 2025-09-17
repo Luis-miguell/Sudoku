@@ -61,6 +61,7 @@ main{
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
 .mayor-celd:nth-child(even){
