@@ -5,12 +5,11 @@ let infoTabla = {
         [6, 5, 0, 0, 9, 0, 7, 0, 3],
         [5, 0, 7, 8, 0, 0, 0, 3, 0],
         [0, 0, 4, 0, 3, 6, 0, 5, 1],
-        [3, 0, 9, 5, 0, 0, 0, 0, 0],
+        [3, 9, 0, 5, 0, 0, 0, 0, 0],
         [0, 0, 5, 0, 0, 0, 0, 2, 0],
         [9, 0, 0, 0, 5, 0, 8, 0, 0],
         [2, 0, 0, 9, 8, 3, 0, 7, 0]
     ],
-
     getSuperCeld(inicioX, inicioY){
         let divX = Math.floor(inicioX / 3);
         let divY = Math.floor(inicioY / 3);
@@ -24,7 +23,6 @@ let infoTabla = {
         }
         return data;
     },
-
     updateTable(){
         let parseado = JSON.stringify(this.tabla);
         localStorage.setItem("table", parseado);
