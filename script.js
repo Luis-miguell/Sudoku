@@ -26,6 +26,16 @@ let infoTabla = {
     updateTable(){
         let parseado = JSON.stringify(this.tabla);
         localStorage.setItem("table", parseado);
+    }, 
+    getRow(i){
+        return infoTabla.tabla[i]
+    }, 
+    getColumn(i){
+        let data = [];
+        infoTabla.tabla.forEach(col => {
+            data.push(col[i]);
+        });
+        return data;
     }
 }
 
@@ -34,7 +44,7 @@ function getTable(){
         let parseado = JSON.parse(data);
         return parseado;
     }
-
+                                    
 window.resaltDependients = (info, siono) => {
     let fila = document.querySelectorAll(`[data-row="${info.row}"]`);
     let column = document.querySelectorAll(`[data-col="${info.col}"]`);
@@ -48,18 +58,32 @@ window.resaltDependients = (info, siono) => {
     superCeld.forEach(ele => {
         ele.classList[siono ? "add" : "remove"]("resaltMini");
     })
+
+    let padres = document.querySelectorAll(".mayor-celd")
+    padres.forEach(padre => {
+        if(padre.querySelector(`[data-row="${info.row}"][data-col="${info.col}"]`))padre.classList[siono ? "add" : "remove"]("resaltMini");
+    })
 }
 
 function editContent(info){
-    if(isNaN(info.valor) || !info.valor.trim() || info.valor > 9 || info.valor < 1){ 
+    if(isNaN(info.valor) || info.valor == "" || info.valor > 9 || info.valor < 1){
         infoTabla.tabla[info.row][info.col] = 0;
         tableRender();
-        return alert("Solo puedes ingresar números entre el 1 y el 9, pendejo.")
+        infoTabla.updateTable();
+        return 
     }
     document.querySelector(`[data-row="${info.row}"][data-col="${info.col}"]`).innerText = info.valor.trim();
     infoTabla.tabla[info.row][info.col] = info.valor.trim();
     infoTabla.updateTable();
+    repeatNumber(info.col, info.row);
 }  
+
+function repeatNumber(col, row){
+    let dataColumn = infoTabla.getColumn(col);
+    let dataRow = infoTabla.getRow(row);
+    console.log(dataColumn + "\n" + dataRow)
+    console.log(col, row)
+}
 
 function tableRender(){
     const skContainer = document.querySelector(".sk-container");
@@ -85,7 +109,7 @@ function tableRender(){
                     minorCeld.addEventListener("blur", (e) => {
                         minorCeld.contentEditable = false;
                         resaltDependients({elemeto: e.currentTarget, row: e.currentTarget.dataset.row, col: e.currentTarget.dataset.col}, false);
-                        editContent({valor: e.currentTarget.innerText.trim() || 0, row: e.currentTarget.dataset.row, col: e.currentTarget.dataset.col});
+                        editContent({valor: e.currentTarget.textContent.trim() || 0, row: e.currentTarget.dataset.row, col: e.currentTarget.dataset.col});
                     });
                     minorCeld.addEventListener("keydown", (e) => {
                         if(e.key === "Enter"){

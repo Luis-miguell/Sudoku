@@ -59,7 +59,7 @@ main{
 .minor-celd{
     border: 0.5px solid rgb(155, 155, 155);
     display: flex;
-    justify-content: center;
+    justify-content: center;                                                                                                                                                                                                                                                                                                                                                                                                                                                            
     align-items: center;
     overflow: hidden;
 }
@@ -69,5 +69,5 @@ main{
 }
 
 .resaltMini{
-    border-color: rgb(255, 128, 0);
+    border: 2px solid rgb(132, 0, 255);
 }
